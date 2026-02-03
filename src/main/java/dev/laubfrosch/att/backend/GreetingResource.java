@@ -1,4 +1,4 @@
-package dev.laubfrosch;
+package dev.laubfrosch.att.backend;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
