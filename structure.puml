@@ -1,0 +1,238 @@
+@startuml
+hide circle
+
+
+
+entity "tournaments" as tournaments #adf587 {
+    tournament_uuid: number <<PK>>
+    __
+    name: varchar(255)
+    description: text
+    location: varchar(255)
+    date: date
+    ..
+    max_slots: number
+    registration_deadline: date
+    allow_registration: boolean
+    primary_color: char(7)
+    secondary_color: char(7)
+}
+
+entity "tournament_registrations" as tournament_registrations #c8e6c9 {
+    team_uuid: number <<PK>> <<FK>> -- teams.team_uuid
+    __
+    registration_date: datetime
+    payment_date: datetime
+    note: text
+}
+
+'package "Teams & Players" #dfe3ff {}
+
+entity "teams" as teams #adb0ff {
+    team_uuid: number <<PK>>
+    tournament_uuid: number -- FK → tournaments.tournament_uuid
+    --
+    name: varchar(255)
+    contact_email: varchar(255)
+    team_member_count: number
+    ..
+    <<unique(tournament_uuid, name)>>
+}
+
+entity "team_members" as team_members #adb0ff {
+    team_member_uuid: number <<PK>>
+    team_uuid: number -- FK → teams.team_uuid
+    __
+    first_name: varchar(255)
+    last_name: varchar(255)
+}
+
+'package "Competition Structure" #ffd4d7 {}
+
+entity "stages" as stages #ffe4e6 {
+    stage_uuid: number <<PK>>
+    tournament_uuid: number -- FK → tournaments.tournament_uuid
+    stage_template_uuid: number -- FK → stage_templates.stage_template_uuid
+    status_id: number -- FK → status.status_id
+    __
+    name: varchar(255)
+    stage_index: smallint
+    ..
+    <<unique(tournament_uuid, stage_index)>>
+}
+
+entity "stage_templates" as stage_templates #ffe4e6 {
+    stage_template_uuid: number <<PK>>
+    __
+    name: varchar(255) <<unique>>
+    shoot_off: boolean
+}
+
+
+entity "rounds" as rounds #ffa1a3 {
+    round_uuid: number <<PK>>
+    stage_uuid: number -- FK → stages.stage_uuid
+    status_id: number -- FK → status.status_id
+    --
+    name: varchar(255)
+    round_index: smallint
+
+    updated_at: datetime
+    ..
+    <<unique(stage_uuid, round_index)>>
+}
+
+
+entity "matches" as matches #ffa1a3 {
+    match_uuid: number <<PK>>
+    round_uuid: number -- FK → rounds.round_uuid
+    status_id: number -- FK → status.status_id
+    --
+    name: varchar(255)
+
+    team1_uuid: number -- FK → teams.team_uuid
+    team2_uuid: number -- FK → teams.team_uuid
+    winner_team_uuid: number -- FK → teams.team_uuid
+
+    target1_uuid: number -- FK → targets.target_uuid
+    target2_uuid: number -- FK → targets.target_uuid
+
+    updated_at: datetime
+    ..
+    <<check: team1_uuid != team2_uuid>>
+    <<check: winner_team_uuid IN (team1_uuid, team2_uuid) OR NULL>>
+}
+
+entity "match_transitions" as match_transitions #b4a7d6 {
+    match_transition_uuid: number <<PK>>
+    --
+    source_match_uuid: number -- FK → matches.match_uuid
+    source_match_winner: boolean
+
+    target_match_uuid: number -- FK → matches.match_uuid
+    target_match_slot: smallint
+    ..
+    <<unique(target_match_uuid, target_match_slot)>>
+}
+
+entity "match_team_members" as match_team_members #cc7070 {
+    match_team_members_uuid: number <<PK>>
+    --
+    match_uuid: number -- FK → matches.match_uuid
+    team_member_uuid: number -- FK → team_members.team_member_uuid
+
+    rotation_index: smallint
+    ..
+    <<unique(match_uuid, team_member_uuid)>>
+}
+
+entity "sets" as sets #ffa1a3 {
+    set_uuid: number <<PK>>
+    match_uuid: number -- FK → matches.match_uuid
+    __
+    set_index: smallint <<unique(match_uuid)>>
+    --
+    total_team1: number
+    total_team2: number
+    points_team1: number
+    points_team2: number
+
+    created_at: datetime
+    updated_at: datetime
+    ..
+    <<unique(match_uuid, set_index)>>
+}
+
+
+'package "Scoring" as scoring #d4fff6 {}
+
+entity "arrows" as arrows #a1ffe3 {
+    arrow_uuid: number <<PK>>
+    score_code: varchar(128) -- FK → scores.score_code
+    team_member_uuid: number -- FK → team_members.team_member_uuid
+    set_uuid: number -- FK → sets.set_uuid
+    __
+    arrow_index: smallint
+    ..
+    <<unique(set_uuid, team_member_uuid, arrow_index)>>
+}
+
+entity "scores" as scores #a1ffe3 {
+    score_code: varchar(128) <<PK>>
+    --
+    value: int
+    color: char(7)
+}
+
+
+
+'package "Info" #fff6d4 {}
+
+entity "status" as status #ffe3a1 {
+    status_id: number <<PK>>
+    --
+    name: varchar(255)
+    description: text
+
+    primary_color: char(7)
+    secondary_color: char(7)
+    pulsing: boolean
+}
+
+entity "targets" as targets #ffe3a1 {
+    target_uuid: number <<PK>>
+    --
+    code: varchar(16) <<unique>>
+}
+
+
+entity "documents" as documents #a895aa {
+    document_uuid: number <<PK>>
+    tournament_uuid: number -- FK → tournaments.tournament_uuid
+    document_type_id: number -- FK → document_types.document_type_id
+    __
+    file_name: varchar(255)
+    mimetype : varchar(255)
+    content: bytea
+}
+
+entity "document_types" as document_types #a895aa {
+    document_type_id: number <<PK>>
+    __
+    name: varchar(255)
+}
+
+
+
+'Relationships'
+
+teams ||--o{ team_members : "team_uuid"
+teams ||--o| tournament_registrations : "team_uuid"
+teams }o--|| tournaments : "tournament_uuid"
+
+arrows }o--|| scores : "score_code"
+arrows }o--|| team_members : "team_member_uuid"
+arrows }o--|| sets : "set_uuid"
+
+sets }o-u-|| matches : "match_uuid"
+
+matches }o--|| teams : "team1_uuid,\nteam2_uuid,\nwinner_team_uuid"
+matches }o--|| targets : "target1_uuid,\ntarget2_uuid"
+matches }o--|| rounds : "round_uuid"
+matches }o--|| status : "status_id"
+
+rounds }o--|| status : "status_id"
+rounds }o--|| stages : "stage_uuid"
+
+stages }o--|| status : "status_id"
+stages }o--|| tournaments : "tournament_uuid"
+stages }o--|| stage_templates : "stage_template_uuid"
+
+documents }o--|| document_types : "document_type_id"
+documents }o--|| tournaments : "tournament_uuid"
+
+match_transitions }o--|| matches : "source_match_uuid,\ntarget_match_uuid"
+
+match_team_members }o--|| matches : "match_uuid"
+match_team_members }o--|| team_members : "team_member_uuid"
+@enduml
