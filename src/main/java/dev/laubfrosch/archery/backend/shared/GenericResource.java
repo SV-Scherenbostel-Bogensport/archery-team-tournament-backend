@@ -3,6 +3,7 @@ package dev.laubfrosch.archery.backend.shared;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -29,7 +30,7 @@ public abstract class GenericResource<T extends PanacheEntityBase, I> {
 
     @POST
     @Transactional
-    public Response create(T entity) {
+    public Response create(@Valid T entity) {
         getRepository().persist(entity);
         return Response.status(201).entity(entity).build();
     }
@@ -37,7 +38,7 @@ public abstract class GenericResource<T extends PanacheEntityBase, I> {
     @PUT
     @Path("/{id}")
     @Transactional
-    public T update(@PathParam("id") I id, T entity) {
+    public T update(@PathParam("id") I id, @Valid T entity) {
         T existing = getRepository().findById(id);
         if (existing == null) {
             throw new WebApplicationException("Entity with id " + id + " not found.", 404);

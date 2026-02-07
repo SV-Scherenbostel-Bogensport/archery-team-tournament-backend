@@ -14,8 +14,8 @@ entity "tournaments" as tournaments #adf587 {
     max_slots: number
     registration_deadline: date
     allow_registration: boolean
-    primary_color: char(7)
-    secondary_color: char(7)
+    primary_color: varchar(7)
+    secondary_color: varchar(7)
 }
 
 entity "tournament_registrations" as tournament_registrations #c8e6c9 {
@@ -162,7 +162,7 @@ entity "scores" as scores #a1ffe3 {
     --
     code: varchar(16)
     value: int
-    color: char(7)
+    color: varchar(7)
 }
 
 
@@ -175,8 +175,8 @@ entity "status" as status #ffe3a1 {
     name: varchar(255)
     description: text
 
-    primary_color: char(7)
-    secondary_color: char(7)
+    primary_color: varchar(7)
+    secondary_color: varchar(7)
     pulsing: boolean
 }
 

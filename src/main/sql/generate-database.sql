@@ -4,8 +4,8 @@ CREATE TABLE status
     id              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name            VARCHAR(255) NOT NULL UNIQUE,
     description     TEXT,
-    primary_color   CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
-    secondary_color CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    primary_color   VARCHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    secondary_color VARCHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
     pulsing         BOOLEAN      NOT NULL DEFAULT FALSE
 );
 
@@ -33,7 +33,7 @@ CREATE TABLE scores
     id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code  VARCHAR(16) NOT NULL,
     value INTEGER NOT NULL,
-    color CHAR(7) CHECK (color ~ '^#[0-9A-Fa-f]{6}$')
+    color VARCHAR(7) CHECK (color ~ '^#[0-9A-Fa-f]{6}$')
 );
 
 
@@ -47,8 +47,8 @@ CREATE TABLE tournaments
     max_slots             BIGINT,
     registration_deadline DATE,
     allow_registration    BOOLEAN,
-    primary_color         CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
-    secondary_color       CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$')
+    primary_color         VARCHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    secondary_color       VARCHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$')
 );
 
 CREATE TABLE documents
