@@ -1,6 +1,7 @@
 package dev.laubfrosch.archery.backend.tournament;
 
 import dev.laubfrosch.archery.backend.participant.Team;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tournament_registrations")
-public class TournamentRegistration {
+public class TournamentRegistration extends PanacheEntityBase {
 
     @Id
     @Column(name = "team_id", nullable = false)

@@ -2,6 +2,7 @@ package dev.laubfrosch.archery.backend.competition;
 
 import dev.laubfrosch.archery.backend.tournament.Status;
 import dev.laubfrosch.archery.backend.participant.Team;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "matches")
-public class Match {
+public class Match extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

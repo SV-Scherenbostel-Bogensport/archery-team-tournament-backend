@@ -1,5 +1,6 @@
 package dev.laubfrosch.archery.backend.tournament;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "document_types")
-public class DocumentType {
+public class DocumentType extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

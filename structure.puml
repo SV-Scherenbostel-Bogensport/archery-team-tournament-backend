@@ -148,7 +148,7 @@ entity "sets" as sets #ffa1a3 {
 
 entity "arrows" as arrows #a1ffe3 {
     arrow_uuid: number <<PK>>
-    score_code: varchar(128) -- FK → scores.score_code
+    score_uuid: number-- FK → scores.score_uuid
     team_member_uuid: number -- FK → team_members.team_member_uuid
     set_uuid: number -- FK → sets.set_uuid
     __
@@ -158,8 +158,9 @@ entity "arrows" as arrows #a1ffe3 {
 }
 
 entity "scores" as scores #a1ffe3 {
-    score_code: varchar(128) <<PK>>
+    score_uuid: number <<PK>>
     --
+    code: varchar(16)
     value: int
     color: char(7)
 }
@@ -210,7 +211,7 @@ teams ||--o{ team_members : "team_uuid"
 teams ||--o| tournament_registrations : "team_uuid"
 teams }o--|| tournaments : "tournament_uuid"
 
-arrows }o--|| scores : "score_code"
+arrows }o--|| scores : "score_uuid"
 arrows }o--|| team_members : "team_member_uuid"
 arrows }o--|| sets : "set_uuid"
 

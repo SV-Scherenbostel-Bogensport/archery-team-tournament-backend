@@ -1,24 +1,28 @@
 package dev.laubfrosch.archery.backend.scoring;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @Setter
 @Table(name = "scores")
-public class Score {
+public class Score extends PanacheEntityBase {
 
     @Id
-    @Size(max = 128)
-    @Column(name = "score_code", nullable = false, length = 128)
-    private String scoreCode;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false)
+    private UUID id;
+
+    @Size(max = 16)
+    @Column(name = "code", nullable = false)
+    private String code;
 
     @NotNull
     @Column(name = "value", nullable = false)

@@ -30,9 +30,10 @@ CREATE TABLE stage_templates
 
 CREATE TABLE scores
 (
-    score_code VARCHAR(128) PRIMARY KEY,
-    value      INTEGER NOT NULL,
-    color      CHAR(7) CHECK (color ~ '^#[0-9A-Fa-f]{6}$')
+    id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code  VARCHAR(16) NOT NULL,
+    value INTEGER NOT NULL,
+    color CHAR(7) CHECK (color ~ '^#[0-9A-Fa-f]{6}$')
 );
 
 
@@ -165,7 +166,7 @@ CREATE TABLE sets
 CREATE TABLE arrows
 (
     id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    score_code     VARCHAR(128) NOT NULL REFERENCES scores (score_code),
+    score_id       UUID NOT NULL REFERENCES scores (id),
     team_member_id UUID         NOT NULL REFERENCES team_members (id),
     set_id         UUID REFERENCES sets (id),
     arrow_index    SMALLINT,

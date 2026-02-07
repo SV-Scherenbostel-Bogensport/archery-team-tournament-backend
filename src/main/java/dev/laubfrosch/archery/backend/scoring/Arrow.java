@@ -1,6 +1,7 @@
 package dev.laubfrosch.archery.backend.scoring;
 
 import dev.laubfrosch.archery.backend.participant.TeamMember;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "arrows")
-public class Arrow {
+public class Arrow extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,7 +22,7 @@ public class Arrow {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "score_code", nullable = false)
+    @JoinColumn(name = "score_id", nullable = false)
     private Score scoreCode;
 
     @NotNull

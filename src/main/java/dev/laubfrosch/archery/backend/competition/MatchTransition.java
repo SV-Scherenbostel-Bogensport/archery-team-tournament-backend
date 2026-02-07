@@ -1,5 +1,6 @@
 package dev.laubfrosch.archery.backend.competition;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "match_transitions")
-public class MatchTransition {
+public class MatchTransition extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

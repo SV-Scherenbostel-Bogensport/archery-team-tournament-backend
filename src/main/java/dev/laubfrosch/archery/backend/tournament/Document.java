@@ -1,5 +1,6 @@
 package dev.laubfrosch.archery.backend.tournament;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "documents")
-public class Document {
+public class Document extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

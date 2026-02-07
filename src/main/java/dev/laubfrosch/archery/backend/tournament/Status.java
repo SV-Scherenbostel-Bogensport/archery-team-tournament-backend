@@ -1,5 +1,6 @@
 package dev.laubfrosch.archery.backend.tournament;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,7 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Table(name = "status")
-public class Status {
+public class Status extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
