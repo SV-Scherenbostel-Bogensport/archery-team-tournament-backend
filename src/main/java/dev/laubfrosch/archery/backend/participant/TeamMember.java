@@ -1,14 +1,19 @@
-package dev.laubfrosch.att.backend;
+package dev.laubfrosch.archery.backend.participant;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "team_members")
 public class TeamMember {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -26,37 +31,4 @@ public class TeamMember {
     @Size(max = 255)
     @Column(name = "last_name")
     private String lastName;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
 }

@@ -1,14 +1,19 @@
-package dev.laubfrosch.att.backend;
+package dev.laubfrosch.archery.backend.competition;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "stage_templates")
 public class StageTemplate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -22,29 +27,4 @@ public class StageTemplate {
     @NotNull
     @Column(name = "is_shoot_off", nullable = false)
     private Boolean isShootOff;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getIsShootOff() {
-        return isShootOff;
-    }
-
-    public void setIsShootOff(Boolean isShootOff) {
-        this.isShootOff = isShootOff;
-    }
-
 }

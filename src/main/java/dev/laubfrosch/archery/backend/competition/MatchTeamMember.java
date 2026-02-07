@@ -1,13 +1,19 @@
-package dev.laubfrosch.att.backend;
+package dev.laubfrosch.archery.backend.competition;
 
+import dev.laubfrosch.archery.backend.participant.TeamMember;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "match_team_members")
 public class MatchTeamMember {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -25,37 +31,5 @@ public class MatchTeamMember {
 
     @Column(name = "rotation_index")
     private Short rotationIndex;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Match getMatch() {
-        return match;
-    }
-
-    public void setMatch(Match match) {
-        this.match = match;
-    }
-
-    public TeamMember getTeamMember() {
-        return teamMember;
-    }
-
-    public void setTeamMember(TeamMember teamMember) {
-        this.teamMember = teamMember;
-    }
-
-    public Short getRotationIndex() {
-        return rotationIndex;
-    }
-
-    public void setRotationIndex(Short rotationIndex) {
-        this.rotationIndex = rotationIndex;
-    }
 
 }
