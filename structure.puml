@@ -52,7 +52,6 @@ entity "team_members" as team_members #adb0ff {
 entity "stages" as stages #ffe4e6 {
     stage_uuid: number <<PK>>
     tournament_uuid: number -- FK → tournaments.tournament_uuid
-    stage_template_uuid: number -- FK → stage_templates.stage_template_uuid
     status_id: number -- FK → status.status_id
     __
     name: varchar(255)
@@ -65,7 +64,7 @@ entity "stage_templates" as stage_templates #ffe4e6 {
     stage_template_uuid: number <<PK>>
     __
     name: varchar(255) <<unique>>
-    shoot_off: boolean
+    data: json
 }
 
 
@@ -227,7 +226,6 @@ rounds }o--|| stages : "stage_uuid"
 
 stages }o--|| status : "status_id"
 stages }o--|| tournaments : "tournament_uuid"
-stages }o--|| stage_templates : "stage_template_uuid"
 
 documents }o--|| document_types : "document_type_id"
 documents }o--|| tournaments : "tournament_uuid"

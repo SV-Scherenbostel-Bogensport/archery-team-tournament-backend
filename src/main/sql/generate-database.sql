@@ -23,9 +23,9 @@ CREATE TABLE targets
 
 CREATE TABLE stage_templates
 (
-    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name         VARCHAR(255) NOT NULL UNIQUE,
-    is_shoot_off BOOLEAN      NOT NULL
+    id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL UNIQUE,
+    data JSON
 );
 
 CREATE TABLE scores
@@ -92,7 +92,6 @@ CREATE TABLE stages
 (
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tournament_id     UUID NOT NULL REFERENCES tournaments (id),
-    stage_template_id UUID NOT NULL REFERENCES stage_templates (id),
     status_id         INTEGER NOT NULL REFERENCES status (id),
     name              VARCHAR(255),
     stage_index       SMALLINT,
@@ -116,6 +115,7 @@ CREATE TABLE matches
     round_id       UUID NOT NULL REFERENCES rounds (id),
     status_id      INTEGER NOT NULL REFERENCES status (id),
     name           VARCHAR(255),
+    shoot_off      BOOLEAN NOT NULL DEFAULT FALSE,
 
     team1_id       UUID REFERENCES teams (id),
     team2_id       UUID REFERENCES teams (id),

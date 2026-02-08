@@ -1,12 +1,16 @@
 package dev.laubfrosch.archery.backend.competition;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.json.Json;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -25,7 +29,7 @@ public class StageTemplate extends PanacheEntityBase {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @Column(name = "is_shoot_off", nullable = false)
-    private Boolean isShootOff;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "data", columnDefinition = "jsonb")
+    private Map<String, Object> data;
 }

@@ -29,11 +29,6 @@ public class Stage extends PanacheEntityBase {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "stage_template_id", nullable = false)
-    private StageTemplate stageTemplate;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 

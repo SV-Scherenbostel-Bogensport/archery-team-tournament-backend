@@ -37,6 +37,10 @@ public class Match extends PanacheEntityBase {
     @Column(name = "name")
     private String name;
 
+    @NotNull
+    @Column(name = "shoot_off", nullable = false)
+    private Boolean shootOff;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team1_id")
     private Team team1;
