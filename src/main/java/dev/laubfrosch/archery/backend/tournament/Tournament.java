@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -42,14 +44,21 @@ public class Tournament extends PanacheEntityBase {
     @Column(name = "registration_deadline")
     private LocalDate registrationDeadline;
 
+    @NotNull
     @Column(name = "allow_registration")
     private Boolean allowRegistration;
 
-    @Size(max = 7)
+    @Size(min = 7, max = 7)
     @Column(name = "primary_color", length = 7)
+    @JdbcTypeCode(Types.CHAR)
     private String primaryColor;
 
-    @Size(max = 7)
+    @Size(min = 7, max = 7)
     @Column(name = "secondary_color", length = 7)
+    @JdbcTypeCode(Types.CHAR)
     private String secondaryColor;
+
+    @NotNull
+    @Column(name = "generated")
+    private Boolean generated;
 }

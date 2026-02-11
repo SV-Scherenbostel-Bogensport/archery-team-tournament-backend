@@ -10,6 +10,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Cacheable
 @Table(name = "document_types")
 public class DocumentType extends PanacheEntityBase {
 

@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.util.UUID;
 
 @Entity
@@ -28,7 +30,8 @@ public class Score extends PanacheEntityBase {
     @Column(name = "value", nullable = false)
     private Integer value;
 
-    @Size(max = 7)
+    @Size(min = 7, max = 7)
     @Column(name = "color", length = 7)
+    @JdbcTypeCode(Types.CHAR)
     private String color;
 }

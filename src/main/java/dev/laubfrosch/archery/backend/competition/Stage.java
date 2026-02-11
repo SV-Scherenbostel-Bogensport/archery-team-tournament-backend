@@ -32,6 +32,11 @@ public class Stage extends PanacheEntityBase {
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "stage_option_id", nullable = false)
+    private StageOption stageOption;
+
     @Size(max = 255)
     @Column(name = "name")
     private String name;

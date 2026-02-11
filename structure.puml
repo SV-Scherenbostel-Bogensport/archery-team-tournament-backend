@@ -14,8 +14,9 @@ entity "tournaments" as tournaments #adf587 {
     max_slots: number
     registration_deadline: date
     allow_registration: boolean
-    primary_color: varchar(7)
-    secondary_color: varchar(7)
+    primary_color: char(7)
+    secondary_color: char(7)
+    generated: boolean
 }
 
 entity "tournament_registrations" as tournament_registrations #c8e6c9 {
@@ -53,6 +54,7 @@ entity "stages" as stages #ffe4e6 {
     stage_uuid: number <<PK>>
     tournament_uuid: number -- FK → tournaments.tournament_uuid
     status_id: number -- FK → status.status_id
+    stage_option_uuid -- FK → stage_options.stage_option_uuid
     __
     name: varchar(255)
     stage_index: smallint
@@ -65,6 +67,16 @@ entity "stage_templates" as stage_templates #ffe4e6 {
     __
     name: varchar(255) <<unique>>
     data: json
+}
+
+entity "stage_options" as stage_options #ffe4e6 {
+    stage_options_uuid: number <<PK>>
+    __
+    target_face_uuid: number -- FK → target_faces.target_face_uuid
+    distance: number
+    shooting_time: number
+    arrows_per_member: number
+    members_per_match: number
 }
 
 
@@ -161,8 +173,26 @@ entity "scores" as scores #a1ffe3 {
     --
     code: varchar(16)
     value: int
-    color: varchar(7)
+    color: char(7)
 }
+
+entity "target_faces" as target_faces #a1ffe3 {
+    target_face_uuid: number <<PK>>
+    --
+    name: varchar(255)
+    size: varchar(16)
+    image: bytea(255)
+}
+
+entity "target_face_scores" as target_face_scores #a1ffe3 {
+    target_face_score_uuid: number <<PK>>
+    --
+    target_face_uuid: number -- FK → target_faces.target_face_uuid
+    score_uuid: number -- FK → scores.score_uuid
+    ..
+    <<unique(target_face_uuid, score_uuid)>>
+}
+
 
 
 
@@ -174,15 +204,18 @@ entity "status" as status #ffe3a1 {
     name: varchar(255)
     description: text
 
-    primary_color: varchar(7)
-    secondary_color: varchar(7)
+    primary_color: char(7)
+    secondary_color: char(7)
     pulsing: boolean
 }
 
 entity "targets" as targets #ffe3a1 {
     target_uuid: number <<PK>>
+    tournament_uuid: number -- FK → tournaments.tournament_uuid
     --
-    code: varchar(16) <<unique>>
+    code: varchar(16)
+    ..
+    <<unique(tournament_uuid, code)>>
 }
 
 
@@ -214,18 +247,23 @@ arrows }o--|| scores : "score_uuid"
 arrows }o--|| team_members : "team_member_uuid"
 arrows }o--|| sets : "set_uuid"
 
-sets }o-u-|| matches : "match_uuid"
+sets }o--|| matches : "match_uuid"
 
 matches }o--|| teams : "team1_uuid,\nteam2_uuid,\nwinner_team_uuid"
 matches }o--|| targets : "target1_uuid,\ntarget2_uuid"
 matches }o--|| rounds : "round_uuid"
 matches }o--|| status : "status_id"
 
+targets }o--|| tournaments
+
 rounds }o--|| status : "status_id"
 rounds }o--|| stages : "stage_uuid"
 
 stages }o--|| status : "status_id"
 stages }o--|| tournaments : "tournament_uuid"
+stages }o--|| stage_options : "stage_option_uuid"
+
+stage_options }o--|| target_faces : "target_face_uuid"
 
 documents }o--|| document_types : "document_type_id"
 documents }o--|| tournaments : "tournament_uuid"
@@ -234,4 +272,7 @@ match_transitions }o--|| matches : "source_match_uuid,\ntarget_match_uuid"
 
 match_team_members }o--|| matches : "match_uuid"
 match_team_members }o--|| team_members : "team_member_uuid"
+
+target_face_scores }o--|| target_faces : "target_face_uuid"
+target_face_scores }o--|| scores : "score_uuid"
 @enduml

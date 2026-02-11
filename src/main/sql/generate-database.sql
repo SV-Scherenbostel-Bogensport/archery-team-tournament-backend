@@ -4,8 +4,8 @@ CREATE TABLE status
     id              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name            VARCHAR(255) NOT NULL UNIQUE,
     description     TEXT,
-    primary_color   VARCHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
-    secondary_color VARCHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    primary_color   CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    secondary_color CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
     pulsing         BOOLEAN      NOT NULL DEFAULT FALSE
 );
 
@@ -13,12 +13,6 @@ CREATE TABLE document_types
 (
     id   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
-);
-
-CREATE TABLE targets
-(
-    id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    code VARCHAR(16) NOT NULL UNIQUE
 );
 
 CREATE TABLE stage_templates
@@ -33,9 +27,34 @@ CREATE TABLE scores
     id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code  VARCHAR(16) NOT NULL,
     value INTEGER NOT NULL,
-    color VARCHAR(7) CHECK (color ~ '^#[0-9A-Fa-f]{6}$')
+    color CHAR(7) CHECK (color ~ '^#[0-9A-Fa-f]{6}$')
 );
 
+CREATE TABLE target_faces
+(
+    id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name  VARCHAR(255) NOT NULL UNIQUE,
+    size  VARCHAR(16),
+    image BYTEA
+);
+
+CREATE TABLE target_face_scores
+(
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    target_face_id UUID NOT NULL REFERENCES target_faces (id),
+    score_id       UUID NOT NULL REFERENCES scores (id),
+    UNIQUE (target_face_id, score_id)
+);
+
+CREATE TABLE stage_options
+(
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    target_face_id    UUID REFERENCES target_faces (id),
+    distance          INTEGER,
+    shooting_time     INTEGER,
+    arrows_per_member INTEGER,
+    members_per_match INTEGER
+);
 
 CREATE TABLE tournaments
 (
@@ -46,9 +65,18 @@ CREATE TABLE tournaments
     date                  DATE,
     max_slots             BIGINT,
     registration_deadline DATE,
-    allow_registration    BOOLEAN,
-    primary_color         VARCHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
-    secondary_color       VARCHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$')
+    allow_registration    BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_color         CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    secondary_color       CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    generated             BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE targets
+(
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tournament_id UUID NOT NULL REFERENCES tournaments (id),
+    code          VARCHAR(16) NOT NULL,
+    UNIQUE (tournament_id, code)
 );
 
 CREATE TABLE documents
@@ -87,12 +115,12 @@ CREATE TABLE tournament_registrations
     note              TEXT
 );
 
-
 CREATE TABLE stages
 (
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tournament_id     UUID NOT NULL REFERENCES tournaments (id),
     status_id         INTEGER NOT NULL REFERENCES status (id),
+    stage_option_id   UUID NOT NULL REFERENCES stage_options (id),
     name              VARCHAR(255),
     stage_index       SMALLINT,
     UNIQUE (tournament_id, stage_index)
