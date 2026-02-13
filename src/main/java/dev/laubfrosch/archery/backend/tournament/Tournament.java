@@ -28,7 +28,7 @@ public class Tournament extends PanacheEntityBase {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", length = Integer.MAX_VALUE)
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Size(max = 255)
@@ -39,14 +39,14 @@ public class Tournament extends PanacheEntityBase {
     private LocalDate date;
 
     @Column(name = "max_slots")
-    private Long maxSlots;
+    private Short maxSlots;
 
     @Column(name = "registration_deadline")
     private LocalDate registrationDeadline;
 
     @NotNull
     @Column(name = "allow_registration")
-    private Boolean allowRegistration;
+    private Boolean allowRegistration = false;
 
     @Size(min = 7, max = 7)
     @Column(name = "primary_color", length = 7)
@@ -58,7 +58,11 @@ public class Tournament extends PanacheEntityBase {
     @JdbcTypeCode(Types.CHAR)
     private String secondaryColor;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "final_ranking_strategy_id", length = 50)
+    private FinalRankingStrategyId finalRankingStrategy;
+
     @NotNull
     @Column(name = "generated")
-    private Boolean generated;
+    private Boolean generated = false;
 }

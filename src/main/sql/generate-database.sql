@@ -1,25 +1,44 @@
 --Tables
 CREATE TABLE status
 (
-    id              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name            VARCHAR(255) NOT NULL UNIQUE,
+    id              VARCHAR(50) PRIMARY KEY,
     description     TEXT,
     primary_color   CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
     secondary_color CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
     pulsing         BOOLEAN      NOT NULL DEFAULT FALSE
 );
 
+CREATE TABLE stage_modes
+(
+    id          VARCHAR(50) PRIMARY KEY, -- z.B. 'QUALIFICATION', 'SINGLE_ELIMINATION', 'DOUBLE_ELIMINATION',
+    description TEXT
+);
+
+CREATE TABLE ranking_methods
+(
+    id          VARCHAR(50) PRIMARY KEY, -- z.B. 'TOTAL_SCORE', 'BRACKET_POS'
+    description TEXT
+);
+
+CREATE TABLE final_ranking_strategies
+(
+    id          VARCHAR(50) PRIMARY KEY, -- z.B. 'LAST_STAGE_WINNER', 'CUMULATIVE_SCORE'
+    description TEXT
+);
+
 CREATE TABLE document_types
 (
-    id   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    id          VARCHAR(50) PRIMARY KEY, -- z.B. 'SCORE_SHEET', 'TOURNAMENT_STANDINGS'
+    description TEXT
 );
 
 CREATE TABLE stage_templates
 (
-    id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL UNIQUE,
-    data JSON
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name              VARCHAR(255) NOT NULL UNIQUE,
+    stage_mode_id     VARCHAR(50) REFERENCES stage_modes(id),
+    ranking_method_id VARCHAR(50) REFERENCES ranking_methods(id),
+    stage_config      JSON
 );
 
 CREATE TABLE scores
@@ -33,9 +52,10 @@ CREATE TABLE scores
 CREATE TABLE target_faces
 (
     id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name  VARCHAR(255) NOT NULL UNIQUE,
+    name  VARCHAR(255) NOT NULL,
     size  VARCHAR(16),
-    image BYTEA
+    image BYTEA,
+    UNIQUE (name, size)
 );
 
 CREATE TABLE target_face_scores
@@ -46,29 +66,20 @@ CREATE TABLE target_face_scores
     UNIQUE (target_face_id, score_id)
 );
 
-CREATE TABLE stage_options
-(
-    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    target_face_id    UUID REFERENCES target_faces (id),
-    distance          INTEGER,
-    shooting_time     INTEGER,
-    arrows_per_member INTEGER,
-    members_per_match INTEGER
-);
-
 CREATE TABLE tournaments
 (
-    id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name                  VARCHAR(255) NOT NULL,
-    description           TEXT,
-    location              VARCHAR(255),
-    date                  DATE,
-    max_slots             BIGINT,
-    registration_deadline DATE,
-    allow_registration    BOOLEAN NOT NULL DEFAULT FALSE,
-    primary_color         CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
-    secondary_color       CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
-    generated             BOOLEAN NOT NULL DEFAULT FALSE
+    id                        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name                      VARCHAR(255) NOT NULL,
+    description               TEXT,
+    location                  VARCHAR(255),
+    date                      DATE,
+    max_slots                 SMALLINT,
+    registration_deadline     DATE,
+    allow_registration        BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_color             CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    secondary_color           CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
+    final_ranking_strategy_id VARCHAR(50) REFERENCES final_ranking_strategies(id),
+    generated                 BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE targets
@@ -83,7 +94,7 @@ CREATE TABLE documents
 (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tournament_id    UUID         NOT NULL REFERENCES tournaments (id),
-    document_type_id INTEGER      NOT NULL REFERENCES document_types (id),
+    document_type_id VARCHAR(50)  NOT NULL REFERENCES document_types (id),
     file_name        VARCHAR(255) NOT NULL,
     mimetype         VARCHAR(255) NOT NULL,
     content          BYTEA        NOT NULL
@@ -95,7 +106,7 @@ CREATE TABLE teams
     tournament_id     UUID NOT NULL REFERENCES tournaments (id),
     name              VARCHAR(255),
     contact_email     VARCHAR(255),
-    team_member_count BIGINT,
+    team_member_count SMALLINT,
     UNIQUE (tournament_id, name)
 );
 
@@ -119,10 +130,15 @@ CREATE TABLE stages
 (
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tournament_id     UUID NOT NULL REFERENCES tournaments (id),
-    status_id         INTEGER NOT NULL REFERENCES status (id),
-    stage_option_id   UUID NOT NULL REFERENCES stage_options (id),
+    status_id         VARCHAR(50) NOT NULL REFERENCES status (id),
+
     name              VARCHAR(255),
+    stage_mode_id     VARCHAR(50) REFERENCES stage_modes(id),
+    ranking_method_id VARCHAR(50) REFERENCES ranking_methods(id),
+    stage_config      JSON,
+
     stage_index       SMALLINT,
+    parent_stage_id   UUID REFERENCES stages (id),
     UNIQUE (tournament_id, stage_index)
 );
 
@@ -130,7 +146,7 @@ CREATE TABLE rounds
 (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     stage_id    UUID NOT NULL REFERENCES stages (id),
-    status_id   INTEGER NOT NULL REFERENCES status (id),
+    status_id   VARCHAR(50) NOT NULL REFERENCES status (id),
     name        VARCHAR(255),
     round_index SMALLINT,
     updated_at  TIMESTAMP,
@@ -141,7 +157,7 @@ CREATE TABLE matches
 (
     id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     round_id       UUID NOT NULL REFERENCES rounds (id),
-    status_id      INTEGER NOT NULL REFERENCES status (id),
+    status_id      VARCHAR(50) NOT NULL REFERENCES status (id),
     name           VARCHAR(255),
     shoot_off      BOOLEAN NOT NULL DEFAULT FALSE,
 
@@ -182,10 +198,10 @@ CREATE TABLE sets
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     match_id     UUID     NOT NULL REFERENCES matches (id),
     set_index    SMALLINT NOT NULL,
-    total_team1  BIGINT,
-    total_team2  BIGINT,
-    points_team1 BIGINT,
-    points_team2 BIGINT,
+    total_team1  SMALLINT,
+    total_team2  SMALLINT,
+    points_team1 SMALLINT,
+    points_team2 SMALLINT,
     created_at   TIMESTAMP        DEFAULT now(),
     updated_at   TIMESTAMP,
     UNIQUE (match_id, set_index)
@@ -200,8 +216,6 @@ CREATE TABLE arrows
     arrow_index    SMALLINT,
     UNIQUE (set_id, team_member_id, arrow_index)
 );
-
-
 
 -- Trigger Function
 CREATE OR REPLACE FUNCTION update_updated_at_column()

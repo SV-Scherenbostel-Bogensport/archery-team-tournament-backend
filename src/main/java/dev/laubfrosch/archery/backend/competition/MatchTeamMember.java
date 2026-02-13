@@ -32,5 +32,4 @@ public class MatchTeamMember extends PanacheEntityBase {
 
     @Column(name = "rotation_index")
     private Short rotationIndex;
-
 }

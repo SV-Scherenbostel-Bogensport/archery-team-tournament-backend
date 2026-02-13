@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class Match extends PanacheEntityBase {
 
     @NotNull
     @Column(name = "shoot_off", nullable = false)
-    private Boolean shootOff;
+    private Boolean shootOff = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team1_id")
@@ -61,6 +62,7 @@ public class Match extends PanacheEntityBase {
     @JoinColumn(name = "target2_id")
     private Target target2;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
 }

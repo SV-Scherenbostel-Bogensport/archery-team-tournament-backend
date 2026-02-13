@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.tournament;
+package dev.laubfrosch.archery.backend.competition;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,13 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Cacheable
-@Table(name = "document_types")
-public class DocumentType {
+@Table(name = "ranking_methods")
+public class RankingMethod {
 
     @Id
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
-    private DocumentTypeId id;
+    private RankingMethodId id;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

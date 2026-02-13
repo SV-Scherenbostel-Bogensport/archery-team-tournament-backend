@@ -16,19 +16,14 @@ import java.sql.Types;
 @Setter
 @Cacheable
 @Table(name = "status")
-public class Status extends PanacheEntityBase {
+public class Status {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private StatusId id;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
-
-    @Column(name = "description", length = Integer.MAX_VALUE)
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Size(min = 7, max = 7)
@@ -44,6 +39,5 @@ public class Status extends PanacheEntityBase {
     @NotNull
     @ColumnDefault("false")
     @Column(name = "pulsing", nullable = false)
-    private Boolean pulsing;
-
+    private Boolean pulsing = false;
 }

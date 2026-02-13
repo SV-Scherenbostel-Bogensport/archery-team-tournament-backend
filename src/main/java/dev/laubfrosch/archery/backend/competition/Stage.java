@@ -8,7 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -32,15 +35,27 @@ public class Stage extends PanacheEntityBase {
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "stage_option_id", nullable = false)
-    private StageOption stageOption;
-
     @Size(max = 255)
     @Column(name = "name")
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stage_mode_id")
+    private StageMode stageMode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ranking_method_id")
+    private RankingMethod rankingMethod;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "stage_config", columnDefinition = "jsonb")
+    private StageConfig stageConfig;
+    //private Map<String, Object> stageConfig;
+
     @Column(name = "stage_index")
-    private Short stageIndex;
+    private Short roundIndex;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_stage_id")
+    private Stage parentStage;
 }

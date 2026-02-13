@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -39,6 +40,7 @@ public class Round extends PanacheEntityBase {
     @Column(name = "round_index")
     private Short roundIndex;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
 }

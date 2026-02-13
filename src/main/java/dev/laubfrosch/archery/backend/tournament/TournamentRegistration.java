@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class TournamentRegistration extends PanacheEntityBase {
     @JoinColumn(name = "team_id", nullable = false)
     private Team teams;
 
+    @CreationTimestamp
     @ColumnDefault("now()")
     @Column(name = "registration_date")
     private Instant registrationDate;
@@ -32,6 +34,6 @@ public class TournamentRegistration extends PanacheEntityBase {
     @Column(name = "payment_date")
     private Instant paymentDate;
 
-    @Column(name = "note", length = Integer.MAX_VALUE)
+    @Column(name = "note", columnDefinition = "TEXT")
     private String note;
 }

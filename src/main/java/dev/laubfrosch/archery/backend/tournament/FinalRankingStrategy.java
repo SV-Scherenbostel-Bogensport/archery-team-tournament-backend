@@ -8,13 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Cacheable
-@Table(name = "document_types")
-public class DocumentType {
+@Table(name = "final_ranking_strategies")
+public class FinalRankingStrategy {
 
     @Id
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
-    private DocumentTypeId id;
+    private FinalRankingStrategyId id;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

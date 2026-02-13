@@ -35,5 +35,5 @@ public class Team extends PanacheEntityBase {
     private String contactEmail;
 
     @Column(name = "team_member_count")
-    private Long teamMemberCount;
+    private Short teamMemberCount;
 }

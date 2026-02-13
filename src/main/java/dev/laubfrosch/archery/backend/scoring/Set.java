@@ -6,7 +6,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -32,21 +35,23 @@ public class Set extends PanacheEntityBase {
     private Short setIndex;
 
     @Column(name = "total_team1")
-    private Long totalTeam1;
+    private Short totalTeam1;
 
     @Column(name = "total_team2")
-    private Long totalTeam2;
+    private Short totalTeam2;
 
     @Column(name = "points_team1")
-    private Long pointsTeam1;
+    private Short pointsTeam1;
 
     @Column(name = "points_team2")
-    private Long pointsTeam2;
+    private Short pointsTeam2;
 
+    @CreationTimestamp
     @ColumnDefault("now()")
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
 }
