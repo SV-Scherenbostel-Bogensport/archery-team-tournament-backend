@@ -20,12 +20,6 @@ CREATE TABLE ranking_methods
     description TEXT
 );
 
-CREATE TABLE final_ranking_strategies
-(
-    id          VARCHAR(50) PRIMARY KEY, -- z.B. 'LAST_STAGE_WINNER', 'CUMULATIVE_SCORE'
-    description TEXT
-);
-
 CREATE TABLE document_types
 (
     id          VARCHAR(50) PRIMARY KEY, -- z.B. 'SCORE_SHEET', 'TOURNAMENT_STANDINGS'
@@ -78,7 +72,6 @@ CREATE TABLE tournaments
     allow_registration        BOOLEAN NOT NULL DEFAULT FALSE,
     primary_color             CHAR(7) CHECK (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
     secondary_color           CHAR(7) CHECK (secondary_color ~ '^#[0-9A-Fa-f]{6}$'),
-    final_ranking_strategy_id VARCHAR(50) REFERENCES final_ranking_strategies(id),
     generated                 BOOLEAN NOT NULL DEFAULT FALSE
 );
 

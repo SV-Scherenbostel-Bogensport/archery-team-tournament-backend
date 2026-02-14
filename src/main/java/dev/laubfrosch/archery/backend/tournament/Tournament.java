@@ -58,10 +58,6 @@ public class Tournament extends PanacheEntityBase {
     @JdbcTypeCode(Types.CHAR)
     private String secondaryColor;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "final_ranking_strategy_id", length = 50)
-    private FinalRankingStrategyId finalRankingStrategy;
-
     @NotNull
     @Column(name = "generated")
     private Boolean generated = false;

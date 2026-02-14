@@ -32,13 +32,6 @@ VALUES
     ('BRACKET_POS', 'Ranking nach Fortschritt im Turnierbaum'),
     ('AVERAGE_ARROW', 'Ranking nach Durchschnittswert pro Pfeil');
 
--- finale Ranking Strategie (Wie wird die Rangliste des Turniers berechnet?)
-INSERT INTO final_ranking_strategies
-    (id, description)
-VALUES
-    ('CUMULATIVE_SCORE', 'Ranking nach kumulierte Stage-Ergebnissen'),
-    ('LAST_STAGE_WINNER', 'Ranking nach letzter Stage');
-
 -- Document Types
 INSERT INTO document_types
     (id)
