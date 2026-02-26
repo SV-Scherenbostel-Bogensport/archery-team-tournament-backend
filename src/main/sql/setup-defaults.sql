@@ -17,20 +17,19 @@ VALUES
 INSERT INTO stage_modes
     (id, description)
 VALUES
-    ('QUALIFICATION', 'Standard Ringzahl-Qualifikation'),
-    ('SINGLE_ELIMINATION', 'K.O. System ohne Trostrunde'),
-    ('DOUBLE_ELIMINATION', 'Doppel K.O. (mit Winner- und Loser-Bracket)'),
-    ('ROUND_ROBIN', 'Jeder gegen Jeden (Match-System)'),
-    ('FINAL_SHOOT_OFF', 'Einzelnes finales Stechen');
+    -- ('QUALIFICATION', 'Standard Ringzahl-Qualifikation'),
+    ('SINGLE_ELIMINATION', 'Einfaches K.O. System'),
+    ('DOUBLE_ELIMINATION', 'Doppel K.O. System (mit Winner- und Loser-Bracket)'),
+    ('ROUND_ROBIN', 'Jeder gegen Jeden');
 
 -- Ranking Methods (Wie wird die Rangliste einer Stage berechnet?)
 INSERT INTO ranking_methods
     (id, description)
 VALUES
-    ('TOTAL_SCORE', 'Ranking nach Gesamtsumme der Ringe'),
-    ('MATCH_WINS', 'Ranking nach gewonnenen Matches (Satzpunkte/Matchpunkte)'),
-    ('BRACKET_POS', 'Ranking nach Fortschritt im Turnierbaum'),
-    ('AVERAGE_ARROW', 'Ranking nach Durchschnittswert pro Pfeil');
+    -- ('TOTAL_SCORE', 'Ranking nach Gesamtsumme der Ringe'),
+    -- ('AVERAGE_ARROW', 'Ranking nach Durchschnittswert pro Pfeil'),
+    ('POINTS', 'Ranking nach gewonnenen Matchpunkte'),
+    ('BRACKET_POS', 'Ranking nach Fortschritt im Turnierbaum');
 
 -- Document Types
 INSERT INTO document_types
@@ -75,49 +74,3 @@ WHERE tf.name = '3er Spot' AND tf.size = '40 cm' AND s.code IN ('10', '9', '8', 
 INSERT INTO target_face_scores (target_face_id, score_id)
 SELECT tf.id, s.id FROM target_faces tf, scores s
 WHERE tf.name = '3er Vegas Spot' AND tf.size = '80 cm' AND s.code IN ('X', '10', '9', '8', '7', '6');
-
-
--- Templates
-INSERT INTO stage_templates
-    (name, stage_mode_id, ranking_method_id, stage_config)
-VALUES
-    (
-        'Wedemark-Team-Open Qualifikationsrunde',
-        'ROUND_ROBIN',
-        'MATCH_WINS',
-        jsonb_build_object(
-                'distance_meters', 30,
-                'shooting_time_seconds', 120,
-                'target_face_id', (SELECT id FROM target_faces WHERE name = '3er Vegas Spot' AND size = '80 cm'),
-                'max_sets_per_match', 5,
-                'points_to_win_match', 6,
-                'draw_mode', 'NONE',
-                'match_points_win', 2,
-                'match_points_draw', 1,
-                'match_points_loss', 0,
-                'teammembers_per_match', 3,
-                'arrows_per_teammember', 2
-        )
-    );
-
-INSERT INTO stage_templates
-    (name, stage_mode_id, ranking_method_id, stage_config)
-VALUES
-    (
-        'Wedemark-Team-Open Doppel-KO-Finale',
-        'DOUBLE_ELIMINATION',
-        'BRACKET_POS',
-        jsonb_build_object(
-                'distance_meters', 30,
-                'shooting_time_seconds', 120,
-                'target_face_id', (SELECT id FROM target_faces WHERE name = '3er Vegas Spot' AND size = '80 cm'),
-                'max_sets_per_match', 5,
-                'points_to_win_match', 6,
-                'draw_mode', 'SHOOT_OFF',
-                'match_points_win', 2,
-                'match_points_draw', 1,
-                'match_points_loss', 0,
-                'teammembers_per_match', 3,
-                'arrows_per_teammember', 2
-        )
-    );

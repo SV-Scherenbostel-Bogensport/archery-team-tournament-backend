@@ -25,6 +25,9 @@ public class TeamMember extends PanacheEntityBase {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
+    @Column(name = "number")
+    private Short number;
+
     @Size(max = 255)
     @Column(name = "first_name")
     private String firstName;

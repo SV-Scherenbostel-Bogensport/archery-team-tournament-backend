@@ -26,15 +26,6 @@ CREATE TABLE document_types
     description TEXT
 );
 
-CREATE TABLE stage_templates
-(
-    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name              VARCHAR(255) NOT NULL UNIQUE,
-    stage_mode_id     VARCHAR(50) REFERENCES stage_modes(id),
-    ranking_method_id VARCHAR(50) REFERENCES ranking_methods(id),
-    stage_config      JSON
-);
-
 CREATE TABLE scores
 (
     id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -107,8 +98,10 @@ CREATE TABLE team_members
 (
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     team_id    UUID NOT NULL REFERENCES teams (id),
+    number     SMALLINT,
     first_name VARCHAR(255),
-    last_name  VARCHAR(255)
+    last_name  VARCHAR(255),
+    UNIQUE (team_id, number)
 );
 
 CREATE TABLE tournament_registrations
