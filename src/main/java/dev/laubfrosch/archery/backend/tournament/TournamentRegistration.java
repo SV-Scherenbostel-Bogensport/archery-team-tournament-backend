@@ -24,15 +24,18 @@ public class TournamentRegistration extends PanacheEntityBase {
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "team_id", nullable = false)
-    private Team teams;
+    private Team team;
 
     @CreationTimestamp
     @ColumnDefault("now()")
-    @Column(name = "registration_date")
-    private Instant registrationDate;
+    @Column(name = "registration")
+    private Instant registration;
 
-    @Column(name = "payment_date")
-    private Instant paymentDate;
+    @Column(name = "payment")
+    private Instant payment;
+
+    @Column(name = "arrival")
+    private Instant arrival;
 
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;

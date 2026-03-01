@@ -10,6 +10,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
@@ -35,8 +36,15 @@ public class Tournament extends PanacheEntityBase {
     @Column(name = "location")
     private String location;
 
+    @Size(max = 255)
+    @Column(name = "address")
+    private String address;
+
     @Column(name = "date")
     private LocalDate date;
+
+    @Column(name = "start_time")
+    private LocalTime startTime;
 
     @Column(name = "max_slots")
     private Short maxSlots;

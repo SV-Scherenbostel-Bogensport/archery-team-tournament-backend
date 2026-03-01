@@ -57,7 +57,9 @@ CREATE TABLE tournaments
     name                      VARCHAR(255) NOT NULL,
     description               TEXT,
     location                  VARCHAR(255),
+    address                   VARCHAR(255),
     date                      DATE,
+    start_time                TIME,
     max_slots                 SMALLINT,
     registration_deadline     DATE,
     allow_registration        BOOLEAN NOT NULL DEFAULT FALSE,
@@ -106,10 +108,11 @@ CREATE TABLE team_members
 
 CREATE TABLE tournament_registrations
 (
-    team_id           UUID PRIMARY KEY REFERENCES teams (id),
-    registration_date TIMESTAMP DEFAULT now(),
-    payment_date      TIMESTAMP,
-    note              TEXT
+    team_id      UUID PRIMARY KEY REFERENCES teams (id),
+    registration TIMESTAMP DEFAULT now(),
+    payment      TIMESTAMP,
+    arrival      TIMESTAMP,
+    note         TEXT
 );
 
 CREATE TABLE stages
