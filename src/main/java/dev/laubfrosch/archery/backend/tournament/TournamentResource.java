@@ -1,5 +1,7 @@
 package dev.laubfrosch.archery.backend.tournament;
 
+import dev.laubfrosch.archery.backend.participant.Team;
+import dev.laubfrosch.archery.backend.participant.TeamService;
 import dev.laubfrosch.archery.backend.shared.GenericResource;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.inject.Inject;
@@ -22,6 +24,9 @@ public class TournamentResource extends GenericResource<Tournament, UUID> {
     @Inject
     TournamentService tournamentService;
 
+    @Inject
+    TeamService teamService;
+
     @Override
     protected PanacheRepositoryBase<Tournament, UUID> getRepository() {
         return repository;
@@ -31,5 +36,12 @@ public class TournamentResource extends GenericResource<Tournament, UUID> {
     @Path("/overview")
     public List<TournamentOverviewResponse> getOverview() {
         return tournamentService.getOverview();
+    }
+
+    @GET
+    @Path("/{id}/teams")
+    public List<Team> getTournamentTeams(@PathParam("id") UUID id) {
+        findOrThrow(id);
+        return teamService.getTeamsByTournament(id);
     }
 }

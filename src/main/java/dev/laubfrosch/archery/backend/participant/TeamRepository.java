@@ -6,5 +6,5 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.UUID;
 
 @ApplicationScoped
-public class TeamRepository  implements PanacheRepositoryBase<Team, UUID> {
+public class TeamRepository implements PanacheRepositoryBase<Team, UUID> {
 }

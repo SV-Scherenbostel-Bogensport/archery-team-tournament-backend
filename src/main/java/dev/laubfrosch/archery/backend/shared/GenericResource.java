@@ -13,6 +13,14 @@ public abstract class GenericResource<T extends PanacheEntityBase, I> {
 
     protected abstract PanacheRepositoryBase<T, I> getRepository();
 
+    protected T findOrThrow(I id) {
+        T entity = getRepository().findById(id);
+        if (entity == null) {
+            throw new NotFoundException("Entity with id " + id + " not found.");
+        }
+        return entity;
+    }
+
     @GET
     public List<T> getAll() {
         return getRepository().listAll();
@@ -21,11 +29,7 @@ public abstract class GenericResource<T extends PanacheEntityBase, I> {
     @GET
     @Path("/{id}")
     public T getSingle(@PathParam("id") I id) {
-        T entity = getRepository().findById(id);
-        if (entity == null) {
-            throw new WebApplicationException("Entity with id of " + id + " does not exist.", 404);
-        }
-        return entity;
+        return findOrThrow(id);
     }
 
     @POST
@@ -39,10 +43,7 @@ public abstract class GenericResource<T extends PanacheEntityBase, I> {
     @Path("/{id}")
     @Transactional
     public T update(@PathParam("id") I id, @Valid T entity) {
-        T existing = getRepository().findById(id);
-        if (existing == null) {
-            throw new WebApplicationException("Entity with id " + id + " not found.", 404);
-        }
+        findOrThrow(id);
         return getRepository().getEntityManager().merge(entity);
     }
 
@@ -53,5 +54,4 @@ public abstract class GenericResource<T extends PanacheEntityBase, I> {
         boolean deleted = getRepository().deleteById(id);
         return deleted ? Response.noContent().build() : Response.status(404).build();
     }
-
 }
