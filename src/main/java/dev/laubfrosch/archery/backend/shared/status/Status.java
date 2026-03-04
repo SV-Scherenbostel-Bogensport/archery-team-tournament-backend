@@ -1,5 +1,6 @@
 package dev.laubfrosch.archery.backend.shared.status;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,7 +16,7 @@ import java.sql.Types;
 @Setter
 @Cacheable
 @Table(name = "status")
-public class Status {
+public class Status extends PanacheEntityBase {
 
     @Id
     @Enumerated(EnumType.STRING)

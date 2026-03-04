@@ -1,5 +1,6 @@
 package dev.laubfrosch.archery.backend.shared.document;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Cacheable
 @Table(name = "document_types")
-public class DocumentType {
+public class DocumentType extends PanacheEntityBase {
 
     @Id
     @Enumerated(EnumType.STRING)

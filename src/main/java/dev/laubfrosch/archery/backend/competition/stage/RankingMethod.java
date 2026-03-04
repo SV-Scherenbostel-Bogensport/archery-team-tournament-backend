@@ -1,5 +1,6 @@
 package dev.laubfrosch.archery.backend.competition.stage;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Cacheable
 @Table(name = "ranking_methods")
-public class RankingMethod {
+public class RankingMethod extends PanacheEntityBase {
 
     @Id
     @Enumerated(EnumType.STRING)
