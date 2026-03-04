@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.document;
+package dev.laubfrosch.archery.backend.shared.document;
 
 import dev.laubfrosch.archery.backend.tournament.Tournament;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;

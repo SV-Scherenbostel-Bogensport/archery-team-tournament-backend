@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.document;
+package dev.laubfrosch.archery.backend.shared.document;
 
 public enum DocumentTypeId {
     ANNOUNCEMENT,

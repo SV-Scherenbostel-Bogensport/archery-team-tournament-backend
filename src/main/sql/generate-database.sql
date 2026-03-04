@@ -88,11 +88,11 @@ CREATE TABLE documents
 
 CREATE TABLE teams
 (
-    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tournament_id     UUID NOT NULL REFERENCES tournaments (id),
-    name              VARCHAR(255),
-    contact_email     VARCHAR(255),
-    team_member_count SMALLINT,
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tournament_id    UUID NOT NULL REFERENCES tournaments (id),
+    name             VARCHAR(255),
+    contact_email    VARCHAR(255),
+    expected_members SMALLINT,
     UNIQUE (tournament_id, name)
 );
 

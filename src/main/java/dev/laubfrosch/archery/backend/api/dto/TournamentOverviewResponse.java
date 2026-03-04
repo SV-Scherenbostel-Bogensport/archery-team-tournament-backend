@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.tournament;
+package dev.laubfrosch.archery.backend.api.dto;
 
 import lombok.Getter;
 import lombok.Setter;

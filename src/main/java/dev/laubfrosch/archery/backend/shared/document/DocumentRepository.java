@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.document;
+package dev.laubfrosch.archery.backend.shared.document;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;

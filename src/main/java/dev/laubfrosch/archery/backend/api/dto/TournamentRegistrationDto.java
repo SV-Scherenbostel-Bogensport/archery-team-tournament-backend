@@ -1,8 +1,8 @@
-package dev.laubfrosch.archery.backend.tournament;
+package dev.laubfrosch.archery.backend.api.dto;
 
 import java.time.Instant;
 
-public record TournamentRegistrationResponse(
+public record TournamentRegistrationDto(
     Instant registration,
     Instant payment,
     Instant arrival,

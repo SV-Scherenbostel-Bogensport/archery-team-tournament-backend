@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.tournament.creation;
+package dev.laubfrosch.archery.backend.tournament.exception;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

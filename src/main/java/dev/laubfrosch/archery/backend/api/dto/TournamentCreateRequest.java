@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.tournament.creation;
+package dev.laubfrosch.archery.backend.api.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

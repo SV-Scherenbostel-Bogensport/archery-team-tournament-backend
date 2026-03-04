@@ -1,4 +1,4 @@
-package dev.laubfrosch.archery.backend.tournament.creation;
+package dev.laubfrosch.archery.backend.tournament.exception;
 
 public class TeamNameConflictException extends RuntimeException {
 
