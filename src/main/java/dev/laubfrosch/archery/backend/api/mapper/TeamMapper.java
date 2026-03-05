@@ -15,7 +15,7 @@ import java.util.List;
 public interface TeamMapper {
 
     @Mapping(target = "id", source = "team.id")
-    @Mapping(target = "registration", source = "reg")
+    @Mapping(target = "tournamentRegistration", source = "reg")
     @Mapping(target = "members", source = "members")
     TeamWithDetailsDto toTeamWithDetails(Team team, TournamentRegistration reg, List<TeamMember> members);
 

@@ -8,6 +8,6 @@ public record TeamWithDetailsDto(
     String name,
     String contactEmail,
     Short expectedMembers,
-    TournamentRegistrationDto registration,
+    TournamentRegistrationDto tournamentRegistration,
     List<TeamMemberDto> members
 ) {}

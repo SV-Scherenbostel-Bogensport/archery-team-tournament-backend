@@ -1,10 +1,7 @@
 package dev.laubfrosch.archery.backend.tournament;
 
-import dev.laubfrosch.archery.backend.api.dto.TournamentCreateRequest;
-import dev.laubfrosch.archery.backend.api.dto.TournamentCreateResponse;
-import dev.laubfrosch.archery.backend.api.dto.TournamentOverviewResponse;
+import dev.laubfrosch.archery.backend.api.dto.*;
 import dev.laubfrosch.archery.backend.participant.TeamService;
-import dev.laubfrosch.archery.backend.api.dto.TeamWithDetailsDto;
 import dev.laubfrosch.archery.backend.shared.GenericResource;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.inject.Inject;
@@ -80,7 +77,7 @@ public class TournamentResource extends GenericResource<Tournament, UUID> {
 
     @GET
     @Path("/{id}/teams")
-    @Operation(summary = "Loads all teams in a tournament, including members and registration details")
+    @Operation(summary = "Loads all teams in a tournament, including members and tournamentRegistration details")
     @APIResponse(
             responseCode = "200",
             description = "List of teams successfully loaded",
@@ -92,5 +89,16 @@ public class TournamentResource extends GenericResource<Tournament, UUID> {
     public Response getTeamsWithMembers(@PathParam("id") UUID tournamentId) {
         List<TeamWithDetailsDto> teams = teamService.getTeamsWithDetails(tournamentId);
         return Response.ok(teams).build();
+    }
+
+    @PUT
+    @Path("/{id}/teams")
+    @Operation(summary = "Updates all teams in a tournament, including members and registration details")
+    @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON,
+            schema = @Schema(implementation = TeamWithDetailsDto.class, type = SchemaType.ARRAY)))
+    public Response updateTeamsWithMembers(@PathParam("id") UUID tournamentId,
+                                           List<TeamUpdateRequest> requests) {
+        List<TeamWithDetailsDto> updated = teamService.updateTeamsForTournament(tournamentId, requests);
+        return Response.ok(updated).build();
     }
 }
