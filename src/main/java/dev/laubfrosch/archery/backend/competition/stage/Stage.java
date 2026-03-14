@@ -56,7 +56,7 @@ public class Stage extends PanacheEntityBase {
     //private Map<String, Object> stageConfig;
 
     @Column(name = "stage_index")
-    private Short roundIndex;
+    private Short stageIndex;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_stage_id")

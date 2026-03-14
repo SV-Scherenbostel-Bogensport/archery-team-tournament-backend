@@ -104,7 +104,7 @@ public class TournamentResource extends GenericResource<Tournament, UUID> {
 
     @POST
     @Path("/{id}/generate")
-    public Response generate(@PathParam("id") UUID tournamentId) {
+    public Response generateTournament(@PathParam("id") UUID tournamentId) {
         try {
             tournamentService.generateTournament(tournamentId);
             return Response.noContent().build();
@@ -113,5 +113,24 @@ public class TournamentResource extends GenericResource<Tournament, UUID> {
                     .entity(e.getMessage())
                     .build();
         }
+    }
+
+    @GET
+    @Path("/{id}/status")
+    @Operation(summary = "Returns the status for the individual stages, rounds and matches of a tournament")
+    @APIResponse(
+            responseCode = "200",
+            description = "Status of the tournament, stages, rounds and matches",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = TournamentStatusDto.class)
+            )
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Tournament not found"
+    )
+    public Response getTournamentStatus(@PathParam("id") UUID tournamentId) {
+        return Response.ok(tournamentService.getTournamentStatus(tournamentId)).build();
     }
 }

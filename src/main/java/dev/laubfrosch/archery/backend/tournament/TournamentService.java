@@ -1,12 +1,12 @@
 package dev.laubfrosch.archery.backend.tournament;
 
-import dev.laubfrosch.archery.backend.api.dto.TournamentCreateRequest;
-import dev.laubfrosch.archery.backend.api.dto.TournamentCreateResponse;
-import dev.laubfrosch.archery.backend.api.dto.TournamentOverviewResponse;
+import dev.laubfrosch.archery.backend.api.dto.*;
 import dev.laubfrosch.archery.backend.api.mapper.TournamentMapper;
 import dev.laubfrosch.archery.backend.competition.match.Match;
+import dev.laubfrosch.archery.backend.competition.match.MatchRepository;
 import dev.laubfrosch.archery.backend.competition.match.MatchTransition;
 import dev.laubfrosch.archery.backend.competition.round.Round;
+import dev.laubfrosch.archery.backend.competition.round.RoundRepository;
 import dev.laubfrosch.archery.backend.competition.stage.*;
 import dev.laubfrosch.archery.backend.participant.*;
 import dev.laubfrosch.archery.backend.scoring.target.Target;
@@ -21,21 +21,39 @@ import jakarta.ws.rs.NotFoundException;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class TournamentService {
 
-    @Inject TournamentRepository tournamentRepository;
-    @Inject TeamRepository teamRepository;
-    @Inject TeamMemberRepository memberRepository;
-    @Inject TournamentRegistrationRepository registrationRepository;
-    @Inject TournamentMapper tournamentMapper;
+    @Inject
+    TournamentRepository tournamentRepository;
+
+    @Inject
+    TeamRepository teamRepository;
+
+    @Inject
+    TeamMemberRepository memberRepository;
+
+    @Inject
+    TournamentRegistrationRepository registrationRepository;
+
+    @Inject
+    StageRepository stageRepository;
+
+    @Inject
+    RoundRepository roundRepository;
+
+    @Inject
+    MatchRepository matchRepository;
+
+    @Inject
+    TournamentMapper tournamentMapper;
 
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<TournamentOverviewResponse> getOverview() {
         return tournamentRepository.listAll().stream().map(t -> {
             TournamentOverviewResponse dto = tournamentMapper.toOverview(t);
-            // TeamCount berechnen wir manuell übers Repository
             dto.setTeamCount((int) teamRepository.count("tournament = ?1", t));
             return dto;
         }).toList();
@@ -197,6 +215,7 @@ public class TournamentService {
 
         // === 7. Finalrunde ===
         Match ko17 = new Match(null, knockoutRounds.get(7), unknownStatus, "[Ko17] 2. Finale: W-Ko16 vs L-Ko16", true, null, null, null, targets.get(3), targets.get(4), null);
+        knockoutRounds.get(7).setStatus(unknownStatus);
 
         Match.persist(ko1, ko2, ko3, ko4, ko5, ko6, ko7, ko8, ko9, ko10, ko11, ko12, ko13, ko14, ko15, ko16, ko17);
 
@@ -293,5 +312,50 @@ public class TournamentService {
         if (count > 0) {
             throw new TeamNameConflictException(name);
         }
+    }
+
+    public TournamentStatusDto getTournamentStatus(UUID tournamentId) {
+
+        Tournament tournamenet = tournamentRepository.findByIdOptional(tournamentId)
+                .orElseThrow(() -> new NotFoundException("Tournament not found"));
+
+        List<StageStatusDto> stageDtos = stageRepository.findByTournamentId(tournamentId).stream()
+                .map(stage -> {
+
+                    List<RoundStatusDto> roundDtos = roundRepository.findByStageId(stage.getId()).stream()
+                            .map(round -> {
+
+                                List<MatchStatusDto> matchDtos = matchRepository.findByRoundId(round.getId()).stream()
+                                        .map(match -> new MatchStatusDto(match.getId(), match.getName(), match.getStatus()))
+                                        .toList();
+
+                                return new RoundStatusDto(round.getId(), round.getName(), round.getStatus(), matchDtos);
+                            })
+                            .toList();
+
+                    return new StageStatusDto(stage.getId(), stage.getName(), stage.getStatus(), roundDtos);
+                })
+                .toList();
+
+        Status tournamentStatus = deriveTournamentStatus(stageDtos);
+        return new TournamentStatusDto(tournamenet.getId(), tournamenet.getName(), tournamentStatus, stageDtos);
+    }
+
+    private Status deriveTournamentStatus(List<StageStatusDto> stages) {
+        if (stages.isEmpty()) return Status.findById(StatusId.UNKNOWN);
+
+        Set<StatusId> statusIds = stages.stream()
+                .map(s -> s.status().getId())
+                .collect(Collectors.toSet());
+
+        if (statusIds.contains(StatusId.CANCELED)) return Status.findById(StatusId.CANCELED);
+        if (statusIds.contains(StatusId.ONGOING)) return Status.findById(StatusId.ONGOING);
+        if (statusIds.contains(StatusId.PAUSED)) return Status.findById(StatusId.PAUSED);
+
+        if (statusIds.stream().allMatch(s -> s == StatusId.ENDED)) return Status.findById(StatusId.ENDED);
+        if (statusIds.stream().allMatch(s -> s == StatusId.PLANNED)) return Status.findById(StatusId.PLANNED);
+
+        // Mix aus PLANNED + ENDED → Tournament läuft noch
+        return Status.findById(StatusId.ONGOING);
     }
 }

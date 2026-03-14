@@ -6,7 +6,7 @@ INSERT INTO status
     (id, description, primary_color, secondary_color, pulsing)
 VALUES
     ('UNKNOWN', '???', null, null, false),
-    ('PLANNED', 'anstehend', '#1b58ff', null, false),
+    ('PLANNED', 'geplant', '#1b58ff', null, false),
     ('ONGOING', 'laufend', '#00ce22', '#00ce22', true),
     ('PAUSED', 'pausiert', '#ff9900', '#ff9900', true),
     ('ENDED', 'beendet', '#878787', null, false),
