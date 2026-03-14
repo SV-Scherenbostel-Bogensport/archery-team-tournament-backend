@@ -3,7 +3,9 @@ package dev.laubfrosch.archery.backend.tournament;
 import dev.laubfrosch.archery.backend.participant.Team;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +16,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "tournament_registrations")
 public class TournamentRegistration extends PanacheEntityBase {
 

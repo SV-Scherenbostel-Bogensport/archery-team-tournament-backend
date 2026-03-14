@@ -101,4 +101,17 @@ public class TournamentResource extends GenericResource<Tournament, UUID> {
         List<TeamWithDetailsDto> updated = teamService.updateTeamsForTournament(tournamentId, requests);
         return Response.ok(updated).build();
     }
+
+    @POST
+    @Path("/{id}/generate")
+    public Response generate(@PathParam("id") UUID tournamentId) {
+        try {
+            tournamentService.generateTournament(tournamentId);
+            return Response.noContent().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
 }

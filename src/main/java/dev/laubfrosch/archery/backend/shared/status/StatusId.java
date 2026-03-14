@@ -2,7 +2,7 @@ package dev.laubfrosch.archery.backend.shared.status;
 
 public enum StatusId {
     UNKNOWN,
-    UPCOMING,
+    PLANNED,
     ONGOING,
     PAUSED,
     ENDED,

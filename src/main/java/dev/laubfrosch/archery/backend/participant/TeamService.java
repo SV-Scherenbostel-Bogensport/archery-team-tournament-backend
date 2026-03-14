@@ -3,6 +3,13 @@ package dev.laubfrosch.archery.backend.participant;
 import dev.laubfrosch.archery.backend.api.dto.TeamUpdateRequest;
 import dev.laubfrosch.archery.backend.api.dto.TeamWithDetailsDto;
 import dev.laubfrosch.archery.backend.api.mapper.TeamMapper;
+import dev.laubfrosch.archery.backend.competition.match.Match;
+import dev.laubfrosch.archery.backend.competition.match.MatchTransition;
+import dev.laubfrosch.archery.backend.competition.round.Round;
+import dev.laubfrosch.archery.backend.competition.stage.*;
+import dev.laubfrosch.archery.backend.scoring.target.Target;
+import dev.laubfrosch.archery.backend.shared.status.Status;
+import dev.laubfrosch.archery.backend.shared.status.StatusId;
 import dev.laubfrosch.archery.backend.tournament.Tournament;
 import dev.laubfrosch.archery.backend.tournament.TournamentRegistration;
 import dev.laubfrosch.archery.backend.tournament.TournamentRegistrationRepository;
@@ -10,11 +17,13 @@ import dev.laubfrosch.archery.backend.tournament.TournamentRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @ApplicationScoped
 public class TeamService {
